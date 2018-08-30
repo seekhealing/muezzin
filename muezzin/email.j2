@@ -1,0 +1,18 @@
+Hello, {{ seeker }}!
+
+This is your daily reminder about upcoming SeekHealing events you may wish to take part in!
+
+{% for event in events %}
+{{ '-' * 80 }}
+{{ event.name }}
+{{ '-' * 80 }}
+
+{{ event.description|replace('<br>','\n')|striptags|wordwrap }}
+
+{{ event.begin.format('ddd, MMM D, hh:mm a') }}{% if event.end %} to {{ event.end.format('hh:mm a') }}{% endif %}
+{% if event.location %}{{ event.location|wordwrap }}{% endif %}
+
+{% endfor %}
+
+This is an automated message. If you would like to change your notification preferences,
+email megan@seekhealing.org to do so. See you soon!

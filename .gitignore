@@ -1,6 +1,7 @@
 muezzin/credentials.json
 muezzin/fb-token.txt
 muezzin/gcal-token.json
+muezzin/gcal-url.txt
 muezzin/gmail-token.json
 muezzin/sms-password.txt
 .vscode/

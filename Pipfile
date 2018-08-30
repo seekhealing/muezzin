@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pylint = "*"
+
+[packages]
+ics = "*"
+requests = "*"
+google-api-python-client = "*"
+"oauth2client" = "*"
+"jinja2" = "*"
+icalevents = {git = "https://github.com/j00bar/icalevents", editable = true}
+
+[requires]
+python_version = "3.6"
