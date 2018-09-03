@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 from oauth2client import file, client, tools
 
 SPREADSHEET_ID = '1JGpgxAdBSWK5iQ9D4wXxCUynLI6LueuBaMRkl4qW7K8'
-RANGE = 'Sheet1!A2:C'
+RANGE = 'Sheet1!A1:C'
 SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
 
 class Seekers(object):
@@ -35,6 +35,13 @@ class Seekers(object):
         except Exception:
             logger.exception('Error getting seeker sheet!')
             raise
+        seekers = result.get('values', [(), (),])
+        _, _, service_enabled = seekers.pop(0)
+        logger.debug('Service enabled? %s', service_enabled)
+        if service_enabled != 'TRUE':
+            logger.warning('Service has been disabled in spreadsheet. Discontinuing.')
+            return None
+        _ = seekers.pop(0)
         for value in result.get('values', []):
             if value[0] and value[1] and value[2]:
                 yield value

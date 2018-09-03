@@ -6,8 +6,9 @@ import sys
  
 import muezzin
 
-test_mode = sys.argv[-1] == '--test'
-dry_run = sys.argv[-1] == '--dry-run'
+args = sys.argv[1:]
+test_mode = '--test' in args
+dry_run = '--dry-run' in args
 
 logging_config = {
     'version': 1,
