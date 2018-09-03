@@ -34,6 +34,7 @@ class EventList(collections.UserList):
             logger.info('Getting events from Google Calendar between now and %s.', event_horizon)
             try:
                 self.__events__ = icalevents.events(self.url)
+                self.__events__.sort(key=lambda e: e.start)
             except Exception:
                 logger.exception('Error getting calendar!')
                 raise
