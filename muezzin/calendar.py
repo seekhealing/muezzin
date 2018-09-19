@@ -23,8 +23,8 @@ class EventList(collections.UserList):
                          event.summary, event.start, event_horizon)
             return True
         else:
-            logger.debug('Event %s out of range - start %s, event_horizon %s',
-                         event.summary, event.start, event_horizon)
+            #logger.debug('Event %s out of range - start %s, event_horizon %s',
+            #             event.summary, event.start, event_horizon)
             return False
 
     @property
@@ -43,7 +43,7 @@ class EventList(collections.UserList):
 class Event(object):
     def __init__(self, icalevent):
         self.name = icalevent.summary
-        self.begin = arrow.Arrow.fromdatetime(icalevent.start)
-        self.end = arrow.Arrow.fromdatetime(icalevent.end)
+        self.begin = arrow.Arrow.fromdatetime(icalevent.start).to('US/Eastern')
+        self.end = arrow.Arrow.fromdatetime(icalevent.end).to('US/Eastern')
         self.description = getattr(icalevent, 'description', '')
         self.location = icalevent.location
