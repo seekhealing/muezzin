@@ -43,7 +43,7 @@ class EventList(collections.UserList):
 class Event(object):
     def __init__(self, icalevent):
         self.name = icalevent.summary
-        self.begin = arrow.Arrow.fromdatetime(icalevent.start).to('US/Eastern')
-        self.end = arrow.Arrow.fromdatetime(icalevent.end).to('US/Eastern')
+        self.begin = arrow.Arrow.fromdatetime(icalevent.start.replace(tzinfo=None))
+        self.end = arrow.Arrow.fromdatetime(icalevent.end.replace(tzinfo=None))
         self.description = getattr(icalevent, 'description', '')
         self.location = icalevent.location
