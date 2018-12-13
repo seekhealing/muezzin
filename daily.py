@@ -3,12 +3,23 @@
 import logging
 import logging.config
 import sys
+import argparse
  
 import muezzin
 
-args = sys.argv[1:]
-test_mode = '--test' in args
-dry_run = '--dry-run' in args
+parser = argparse.ArgumentParser(description='Hear ye, Seekers!')
+parser.add_argument('--test', action='store_true', dest='test', default=False,
+                    help='Only contact test accounts and enable debug logging.')
+parser.add_argument('--dry-run', action='store_true', dest='dry_run', default=False,
+                    help='Do everything except actually send anything.')
+parser.add_argument('--templates-dir', action='store', dest='templates_dir', default=None,
+                    help='Path containing email.j2 and sms.j2 to use.')
+
+args = parser.parse_args()
+
+test_mode = args.test
+dry_run = args.dry_run
+templates_dir = args.templates_dir
 
 logging_config = {
     'version': 1,
@@ -34,4 +45,4 @@ logging_config = {
 }
 logging.config.dictConfig(logging_config)
 
-muezzin.run(test=test_mode, dry_run=dry_run)
+muezzin.run(test=test_mode, dry_run=dry_run, templates_dir=templates_dir)

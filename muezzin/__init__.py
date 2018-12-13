@@ -1,7 +1,9 @@
 import logging
 logger = logging.getLogger(__name__)
 
-def run(test=False, dry_run=False):
+import os
+
+def run(test=False, dry_run=False, templates_dir=''):
     from . import seekers, calendar, email, sms, facebook
     if test:
         logger.info('Test mode enabled. Only processing seekers with last name Testerson.')
@@ -10,8 +12,10 @@ def run(test=False, dry_run=False):
     if not events:
         logging.info('No events')
         return
-    email = email.Email()
-    sms = sms.SMS()
+    email_kwargs = {'template': os.path.join(templates_dir, 'email.j2')} if templates_dir else {}
+    email = email.Email(**email_kwargs)
+    sms_kwargs = {'template': os.path.join(templates_dir, 'sms.j2')} if templates_dir else {}
+    sms = sms.SMS(**sms_kwargs)
     facebook = facebook.Facebook()
     for seeker_name, seeker_comms_pref, seeker_contact in seekers:
         test_case = seeker_name.rsplit(' ', 1)[-1] == 'Testerson'

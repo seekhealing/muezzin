@@ -10,11 +10,14 @@ API_USERNAME = 'ACcb87d18fe15bee722b834de0df2da1ee'
 API_PASSWORD = open(os.path.join(os.path.dirname(__file__), 'sms-password.txt')).read()
 
 class SMS(object):
+    def __init__(self, template=os.path.join(os.path.dirname(__file__), 'sms.j2')):
+        self.template = template
+
     def normalize_number(self, seeker_number):
         return '+1' + ''.join([c for c in seeker_number if c in '01234568789'])[-10:]
 
     def send(self, seeker_name, seeker_number, events, dry_run=False):
-        tmpl = Template(open(os.path.join(os.path.dirname(__file__), 'sms.j2')).read())
+        tmpl = Template(open(self.template).read())
         body = tmpl.render(seeker=seeker_name, number=seeker_number, events=events)
         try:
             logger.info('Sending SMS to %s', self.normalize_number(seeker_number))
