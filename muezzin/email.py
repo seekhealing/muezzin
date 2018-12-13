@@ -42,7 +42,9 @@ class Email(object):
         payload = {'raw': base64.urlsafe_b64encode(message.as_string().encode('utf-8')).decode('ascii')}
         try:
             logger.info('Sending email to %s', seeker_email)
-            if not dry_run:
+            if dry_run:
+                logger.debug('%s', body)
+            else:
                 self.api.users().messages().send(userId='me', body=payload).execute()
         except errors.HttpError as e:
             logger.exception('Error communicating with Gmail!')
