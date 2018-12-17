@@ -32,3 +32,5 @@ class SMS(object):
                 response.raise_for_status()
         except requests.RequestException as e:
             logger.exception('Error communicating with Twilio!')
+            if e.response.text:
+                logger.error('Twilio error: %s', e.response.text)

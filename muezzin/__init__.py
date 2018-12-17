@@ -3,12 +3,13 @@ logger = logging.getLogger(__name__)
 
 import os
 
-def run(test=False, dry_run=False, templates_dir=''):
+def run(test=False, dry_run=False, templates_dir='',
+        send_email=True, send_sms=True, days_ahead=4):
     from . import seekers, calendar, email, sms, facebook
     if test:
         logger.info('Test mode enabled. Only processing seekers with last name Testerson.')
     seekers = seekers.Seekers()
-    events = calendar.EventList()
+    events = calendar.EventList(days_ahead=days_ahead)
     if not events:
         logging.info('No events')
         return
@@ -22,9 +23,9 @@ def run(test=False, dry_run=False, templates_dir=''):
         if test != test_case:
             continue
         logger.debug('Seeker: %s; Comms pref: %s', seeker_name, seeker_comms_pref)
-        if seeker_comms_pref == 'Email':
+        if seeker_comms_pref == 'Email' and send_email:
             email.send(seeker_name, seeker_contact, events, dry_run=dry_run)
-        elif seeker_comms_pref == 'SMS':
+        elif seeker_comms_pref == 'SMS' and send_sms:
             sms.send(seeker_name, seeker_contact, events, dry_run=dry_run)
         elif seeker_comms_pref == 'Facebook':
             logger.info('Facebook presently disabled...')

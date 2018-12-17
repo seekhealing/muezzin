@@ -14,12 +14,18 @@ parser.add_argument('--dry-run', action='store_true', dest='dry_run', default=Fa
                     help='Do everything except actually send anything.')
 parser.add_argument('--templates-dir', action='store', dest='templates_dir', default=None,
                     help='Path containing email.j2 and sms.j2 to use.')
+parser.add_argument('--no-email', action='store_false', dest='send_email', default=True)
+parser.add_argument('--no-sms', action='store_false', dest='send_sms', default=True)
+parser.add_argument('--days-ahead', action='store', dest='days_ahead', default=4, type=int)
 
 args = parser.parse_args()
 
 test_mode = args.test
 dry_run = args.dry_run
 templates_dir = args.templates_dir
+send_email = args.send_email
+send_sms = args.send_sms
+days_ahead = args.days_ahead
 
 logging_config = {
     'version': 1,
@@ -45,4 +51,5 @@ logging_config = {
 }
 logging.config.dictConfig(logging_config)
 
-muezzin.run(test=test_mode, dry_run=dry_run, templates_dir=templates_dir)
+muezzin.run(test=test_mode, dry_run=dry_run, templates_dir=templates_dir,
+            send_email=send_email, send_sms=send_sms, days_ahead=days_ahead)
