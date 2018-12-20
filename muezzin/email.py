@@ -38,7 +38,7 @@ class Email(object):
 
         message['to'] = seeker_email
         message['from'] = 'info@seekhealing.org'
-        message['subject'] = 'Upcoming SeekHealing Events - %s' % (arrow.now().format('ddd, MMM D'))
+        message['subject'] = 'Upcoming %s - %s' % (events.name, arrow.now().format('ddd, MMM D'))
         payload = {'raw': base64.urlsafe_b64encode(message.as_string().encode('utf-8')).decode('ascii')}
         try:
             logger.info('Sending email to %s', seeker_email)

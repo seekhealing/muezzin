@@ -1,4 +1,4 @@
-Upcoming SeekHealing Events: {% for event in events %}
+Upcoming {{ events.name }}: {% for event in events %}
 ** {{ event.name }}{% if event.location %} @ {{ event.location }}{% endif %}, {{ event.begin.format('ddd, MMM D, hh:mm a') }} 
 {% endfor %}
 Email megan@seekhealing.org to unsub.

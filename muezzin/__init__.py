@@ -4,12 +4,18 @@ logger = logging.getLogger(__name__)
 import os
 
 def run(test=False, dry_run=False, templates_dir='',
-        send_email=True, send_sms=True, days_ahead=4):
+        send_email=True, send_sms=True, days_ahead=4,
+        calendar_url=None, calendar_name=None):
     from . import seekers, calendar, email, sms, facebook
     if test:
         logger.info('Test mode enabled. Only processing seekers with last name Testerson.')
     seekers = seekers.Seekers()
-    events = calendar.EventList(days_ahead=days_ahead)
+    cal_kwargs = dict(days_ahead=days_ahead)
+    if calendar_url:
+        cal_kwargs['url'] = calendar_url
+    if calendar_name:
+        cal_kwargs['name'] = calendar_name
+    events = calendar.EventList(**cal_kwargs)
     if not events:
         logging.info('No events')
         return

@@ -11,10 +11,12 @@ import pytz
 import requests
 
 CALENDAR_URL = open(os.path.join(os.path.dirname(__file__), 'gcal-url.txt')).read()
+CALENDAR_NAME = 'SeekHealing Community Events'
 
 class EventList(collections.UserList):
-    def __init__(self, data=[], url=CALENDAR_URL, days_ahead=4):
+    def __init__(self, data=[], url=CALENDAR_URL, name=CALENDAR_NAME, days_ahead=4):
         self.url = url
+        self.name = name
         self.days_ahead = days_ahead
         self.__events__ = data
     
