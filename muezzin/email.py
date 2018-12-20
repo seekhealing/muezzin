@@ -18,9 +18,11 @@ SCOPES = 'https://www.googleapis.com/auth/gmail.send'
 
 class Email(object):
     def __init__(self, template=os.path.join(os.path.dirname(__file__), 'email.j2'),
-                 secrets_file=os.path.join(os.path.dirname(__file__), 'credentials.json')):
+                 secrets_file=os.path.join(os.path.dirname(__file__), 'credentials.json'),
+                 subject=None):
         self.template = template
         self.secrets_file = secrets_file
+        self.subject = subject
         self.api = self.__api__()
         
     def __api__(self):
@@ -38,7 +40,7 @@ class Email(object):
 
         message['to'] = seeker_email
         message['from'] = 'info@seekhealing.org'
-        message['subject'] = 'Upcoming %s - %s' % (events.name, arrow.now().format('ddd, MMM D'))
+        message['subject'] = self.subject or 'Upcoming %s - %s' % (events.name, arrow.now().format('ddd, MMM D'))
         payload = {'raw': base64.urlsafe_b64encode(message.as_string().encode('utf-8')).decode('ascii')}
         try:
             logger.info('Sending email to %s', seeker_email)

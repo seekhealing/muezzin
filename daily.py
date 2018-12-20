@@ -19,6 +19,7 @@ parser.add_argument('--no-sms', action='store_false', dest='send_sms', default=T
 parser.add_argument('--days-ahead', action='store', dest='days_ahead', default=4, type=int)
 parser.add_argument('--calendar-url', action='store', dest='calendar_url', default=None)
 parser.add_argument('--calendar-name', action='store', dest='calendar_name', default=None)
+parser.add_argument('--email-subject', action='store', dest='subject', default=None)
 
 args = parser.parse_args()
 
@@ -30,6 +31,7 @@ send_sms = args.send_sms
 days_ahead = args.days_ahead
 calendar_url = args.calendar_url
 calendar_name = args.calendar_name
+subject = args.subject
 
 logging_config = {
     'version': 1,
@@ -57,4 +59,5 @@ logging.config.dictConfig(logging_config)
 
 muezzin.run(test=test_mode, dry_run=dry_run, templates_dir=templates_dir,
             send_email=send_email, send_sms=send_sms, days_ahead=days_ahead,
-            calendar_url=calendar_url, calendar_name=calendar_name)
+            calendar_url=calendar_url, calendar_name=calendar_name,
+            subject=subject)

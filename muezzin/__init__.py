@@ -5,7 +5,8 @@ import os
 
 def run(test=False, dry_run=False, templates_dir='',
         send_email=True, send_sms=True, days_ahead=4,
-        calendar_url=None, calendar_name=None):
+        calendar_url=None, calendar_name=None,
+        subject=None):
     from . import seekers, calendar, email, sms, facebook
     if test:
         logger.info('Test mode enabled. Only processing seekers with last name Testerson.')
@@ -19,7 +20,9 @@ def run(test=False, dry_run=False, templates_dir='',
     if not events:
         logging.info('No events')
         return
-    email_kwargs = {'template': os.path.join(templates_dir, 'email.j2')} if templates_dir else {}
+    email_kwargs = dict(subject=subject)
+    if templates_dir:
+        email_kwargs['template'] = os.path.join(templates_dir, 'email.j2')
     email = email.Email(**email_kwargs)
     sms_kwargs = {'template': os.path.join(templates_dir, 'sms.j2')} if templates_dir else {}
     sms = sms.SMS(**sms_kwargs)
