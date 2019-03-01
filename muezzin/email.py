@@ -5,12 +5,13 @@ import os
 from email.mime.text import MIMEText
 from email import encoders
 import base64
+import pickle
 
 from jinja2 import Template
 from httplib2 import Http
 from googleapiclient.discovery import build
 from googleapiclient import errors
-from oauth2client import file, client, tools
+from google.auth.transport.requests import Request
 import arrow
 
 SCOPES = 'https://www.googleapis.com/auth/gmail.send'
@@ -18,20 +19,23 @@ SCOPES = 'https://www.googleapis.com/auth/gmail.send'
 
 class Email(object):
     def __init__(self, template=os.path.join(os.path.dirname(__file__), 'email.j2'),
-                 secrets_file=os.path.join(os.path.dirname(__file__), 'credentials.json'),
                  subject=None):
         self.template = template
-        self.secrets_file = secrets_file
         self.subject = subject
         self.api = self.__api__()
         
     def __api__(self):
-        store = file.Storage(os.path.join(os.path.dirname(__file__), 'gmail-token.json'))
-        creds = store.get()
-        if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets(self.secrets_file, SCOPES)
-            creds = tools.run_flow(flow, store)
-        return build('gmail', 'v1', http=creds.authorize(Http()))
+        if os.environ.get('GOOGLE_TOKEN'):
+            self.token = pickle.loads(base64.decodebytes(os.environ('GOOGLE_TOKEN')))
+        else:
+            token_file = os.path.join(os.path.dirname(__file__), 'token.pickle')
+            self.token = pickle.load(open(token_file, 'rb'))
+        if not self.token or not self.token.valid:
+            if self.token and self.token.expired and self.token.refresh_token:
+                self.token.refresh(Request())
+            else:
+                raise ValueError('Token is not valid.')
+        return build('gmail', 'v1', credentials=self.token)
 
     def send(self, seeker_name, seeker_email, events, dry_run=False):
         tmpl = Template(open(self.template).read())

@@ -2,10 +2,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 import os
+import pickle
+import base64
 
-from httplib2 import Http
 from googleapiclient.discovery import build
-from oauth2client import file, client, tools
+from googleapiclient import errors
+from google.auth.transport.requests import Request
 
 SPREADSHEET_ID = '1JGpgxAdBSWK5iQ9D4wXxCUynLI6LueuBaMRkl4qW7K8'
 RANGE = 'Sheet1!A1:C'
@@ -19,12 +21,17 @@ class Seekers(object):
         self.secrets_file = secrets_file
 
     def __api__(self):
-        store = file.Storage(os.path.join(os.path.dirname(__file__), 'gcal-token.json'))
-        creds = store.get()
-        if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets(self.secrets_file, SCOPES)
-            creds = tools.run_flow(flow, store)
-        return build('sheets', 'v4', http=creds.authorize(Http()))
+        if os.environ.get('GOOGLE_TOKEN'):
+            self.token = pickle.loads(base64.decodebytes(os.environ('GOOGLE_TOKEN')))
+        else:
+            token_file = os.path.join(os.path.dirname(__file__), 'token.pickle')
+            self.token = pickle.load(open(token_file, 'rb'))
+        if not self.token or not self.token.valid:
+            if self.token and self.token.expired and self.token.refresh_token:
+                self.token.refresh(Request())
+            else:
+                raise ValueError('Token is not valid.')
+        return build('sheets', 'v4', credentials=self.token)
 
     def __iter__(self):
         api = self.__api__()
