@@ -5,15 +5,15 @@ import os
 
 def run(test=False, dry_run=False, templates_dir='',
         send_email=True, send_sms=True, days_ahead=4,
-        calendar_url=None, calendar_name=None,
+        calendar_id=None, calendar_name=None,
         subject=None):
     from . import seekers, calendar, email, sms, facebook
     if test:
         logger.info('Test mode enabled. Only processing seekers with last name Testerson.')
     seekers = seekers.Seekers()
     cal_kwargs = dict(days_ahead=days_ahead)
-    if calendar_url:
-        cal_kwargs['url'] = calendar_url
+    if calendar_id:
+        cal_kwargs['id'] = calendar_id
     if calendar_name:
         cal_kwargs['name'] = calendar_name
     events = calendar.EventList(**cal_kwargs)
