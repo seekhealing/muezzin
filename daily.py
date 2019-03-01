@@ -17,7 +17,7 @@ parser.add_argument('--templates-dir', action='store', dest='templates_dir', def
 parser.add_argument('--no-email', action='store_false', dest='send_email', default=True)
 parser.add_argument('--no-sms', action='store_false', dest='send_sms', default=True)
 parser.add_argument('--days-ahead', action='store', dest='days_ahead', default=4, type=int)
-parser.add_argument('--calendar-id', action='store', dest='id', default=None)
+parser.add_argument('--calendar-id', action='store', dest='calendar_id', default=None)
 parser.add_argument('--calendar-name', action='store', dest='calendar_name', default=None)
 parser.add_argument('--email-subject', action='store', dest='subject', default=None)
 
